@@ -21,13 +21,17 @@ public abstract class Neuron implements Serializable {
         this.activationStrategy = activationStrategy;
     }
 
+    public UUID getId() {
+        return id;
+    }
+
     public abstract void activate();
     public abstract double getOutput();
 
     protected static void updateSourceParameters(Map<Neuron, Synapse> sources, double error, double learningRate, double momentum) {
         sources.values().forEach(synapse -> {
             double delta = learningRate * error * synapse.getSource().getOutput();
-            //delta += momentum * sources.get(source).getPreviousDelta();
+            delta += momentum * synapse.getPreviousDelta();
 
             synapse.setPreviousDelta(delta);
             synapse.setWeight(synapse.getWeight() - delta);

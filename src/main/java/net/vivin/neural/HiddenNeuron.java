@@ -4,6 +4,7 @@ import net.vivin.neural.activators.ActivationStrategy;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created on 2/28/16 at 10:41 AM
@@ -47,7 +48,7 @@ public class HiddenNeuron extends Neuron implements TargetNeuron, SourceNeuron {
 
     @Override
     public void updateParameters(double learningRate, double momentum) {
-        Neuron.updateSourceParameters(sources, getError(), learningRate, momentum);
+        Neuron.updateSourceParameters(sources, error, learningRate, momentum);
     }
 
     @Override
@@ -68,5 +69,24 @@ public class HiddenNeuron extends Neuron implements TargetNeuron, SourceNeuron {
         calculateWeightedSum();
         output = activationStrategy.activate(weightedSum);
         derivative = activationStrategy.derivative(weightedSum);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("HiddenNeuron: [\n")
+            .append("\tid = ").append(id).append("\n")
+            .append("\tsources = [\n")
+            .append(
+                String.join("\n", sources.values().stream().map(s -> String.format("\t\t[id = %s, weight = %f]", s.getSource().getId(), s.getWeight())).collect(Collectors.toList()))
+            )
+            .append("\n\t]\n")
+            .append("\tweightedSum = ").append(weightedSum).append("\n")
+            .append("\toutput = ").append(output).append("\n")
+            .append("\tderivative = ").append(derivative).append("\n")
+            .append("\terror = ").append(error).append("\n")
+            .append("]");
+
+        return builder.toString();
     }
 }

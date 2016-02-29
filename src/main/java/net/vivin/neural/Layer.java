@@ -2,6 +2,7 @@ package net.vivin.neural;
 
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,4 +40,22 @@ public abstract class Layer<T extends Neuron> implements Serializable {
 
     abstract boolean hasBias();
     abstract BiasNeuron getBias();
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(this.getClass().getSimpleName()).append(": [\n")
+            .append(
+                String.join("\n", neurons.stream().map(n ->
+                    String.join("\n", Arrays.stream(n.toString().split("\n"))
+                        .map(s -> String.format("\t%s", s))
+                        .collect(Collectors.toList()))
+                ).collect(Collectors.toList()))
+            )
+            .append("\n")
+            .append(hasBias() ? String.format("\t%s\n", getBias().toString()) : "")
+            .append("]");
+
+        return builder.toString();
+    }
 }

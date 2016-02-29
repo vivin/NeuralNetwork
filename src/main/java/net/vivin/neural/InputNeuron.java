@@ -34,4 +34,9 @@ public class InputNeuron extends Neuron implements SourceNeuron {
     public void addTargetSynapse(TargetNeuron neuron, Synapse synapse) {
         // do nothing
     }
+
+    @Override
+    public String toString() {
+        return String.format("InputNeuron: [id = %s, input = %f]", id, output);
+    }
 }

@@ -28,22 +28,6 @@ public class NeuralNetwork implements Serializable {
 
         if(hiddenLayers.isEmpty()) {
             outputLayer.connect(inputLayer);
-
-            if(builder.weights.length > 0) {
-                if(outputLayer.neurons.size() != builder.weights.length) {
-                    throw new IllegalArgumentException("Number of weight vectors for output layer does not equal number of outputs");
-                }
-
-                if(outputLayer.previous.neurons.size() != builder.weights[0].length) {
-                    throw new IllegalArgumentException("Dimension of weight vectors for output layer does not equal number of neurons in previous layer");
-                }
-
-                IntStream.range(0, outputLayer.previous.neurons.size()).forEach(i ->
-                    IntStream.range(0, outputLayer.neurons.size()).forEach(j ->
-                        outputLayer.neurons.get(j).getSynapseForSource((Neuron) outputLayer.previous.neurons.get(i)).setWeight(builder.weights[j][i])
-                    )
-                );
-            }
         } else {
             hiddenLayers.get(0).connect(inputLayer);
             IntStream.range(1, hiddenLayers.size()).forEach(i -> hiddenLayers.get(i).connect(hiddenLayers.get(i - 1)));
@@ -87,6 +71,8 @@ public class NeuralNetwork implements Serializable {
             error += Math.pow(expected[i] - output[i], 2);
         }
 
+        //System.out.println(toString());
+
         return error / 2;
     }
 
@@ -94,7 +80,6 @@ public class NeuralNetwork implements Serializable {
         private final InputLayer inputLayer;
         private final List<HiddenLayer> hiddenLayers = new ArrayList<>();
         private final OutputLayer outputLayer;
-        private double[][] weights = {};
 
         public Builder(int inputDimensions, int outputDimensions, ActivationStrategy outputActivationStrategy) {
             inputLayer = new InputLayer(inputDimensions);
@@ -104,11 +89,6 @@ public class NeuralNetwork implements Serializable {
         public Builder(int inputDimensions, double inputBias, int outputDimensions, ActivationStrategy outputActivationStrategy) {
             inputLayer = new InputLayer(inputDimensions, inputBias);
             outputLayer = new OutputLayer(outputDimensions, outputActivationStrategy);
-        }
-
-        public Builder withOutputWeights(double[][] weights) {
-            this.weights = weights;
-            return this;
         }
 
         public Builder addHiddenLayer(int dimensions, ActivationStrategy activationStrategy) {
@@ -124,6 +104,46 @@ public class NeuralNetwork implements Serializable {
         public NeuralNetwork build() {
             return new NeuralNetwork(this);
         }
+    }
+
+    /*
+             .append(
+                String.join("\n", neurons.stream().map(n ->
+                    String.join("\n", Arrays.stream(n.toString().split("\n"))
+                        .map(s -> String.format("\t%s", s))
+                        .collect(Collectors.toList()))
+                ).collect(Collectors.toList()))
+            )
+     */
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("NeuralNetwork: [\n")
+            .append(
+                String.join("\n", Arrays.stream(inputLayer.toString().split("\n"))
+                    .map(s -> String.format("\t%s", s))
+                    .collect(Collectors.toList())
+                )
+            )
+            .append("\n")
+            .append(
+                String.join("\n", hiddenLayers.stream().map(h ->
+                    String.join("\n", Arrays.stream(h.toString().split("\n"))
+                        .map(s -> String.format("\t%s", s))
+                        .collect(Collectors.toList())
+                    )
+                ).collect(Collectors.toList()))
+            )
+            .append("\n")
+            .append(
+                String.join("\n", Arrays.stream(outputLayer.toString().split("\n"))
+                    .map(s -> String.format("\t%s", s))
+                    .collect(Collectors.toList())
+                )
+            ).append("\n]");
+
+        return builder.toString();
     }
 
 /*

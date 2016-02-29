@@ -13,4 +13,9 @@ public class BiasNeuron extends InputNeuron {
         super();
         this.setOutput(bias);
     }
+
+    @Override
+    public String toString() {
+        return String.format("BiasNeuron: [id = %s, bias = %f]", id, getOutput());
+    }
 }

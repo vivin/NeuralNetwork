@@ -80,7 +80,7 @@ public class NNTest {
 
         SecureRandom r = new SecureRandom();
 
-        double iterations = 30000;
+        double iterations = 3000000;
         double error;
         int i = 0;
 
@@ -88,12 +88,12 @@ public class NNTest {
             error = 0;
             Collections.shuffle(trainingDataList);
             for (TrainingData trainingData : trainingDataList) {
-                error += net.train(trainingData.input, trainingData.output, 0.001, 0.9);
+                error += net.train(trainingData.input, trainingData.output, 0.1, 0.9);
             }
 
             i++;
             System.out.println(String.format("Iteration #%d: %f", i, error));
-        } while(i < iterations && error > 0.000001);
+        } while(i < iterations && error > 0.00001);
 
         net.getOutput(new double[]{0, 0});
         System.out.println(String.format("0 XOR 0: %f", net.getOutput()[0]));
