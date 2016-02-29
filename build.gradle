@@ -1,0 +1,14 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'net.vivin'
+version = '1.0'
+
+description = "Neural Network Code"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+     maven { url "http://repo.maven.apache.org/maven2" }
+}
