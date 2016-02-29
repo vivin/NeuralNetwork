@@ -8,20 +8,28 @@ import java.io.Serializable;
  * Date: 11/5/11
  * Time: 12:03 PM
  */
-public class Synapse<T extends Neuron> implements Serializable {
+public class WeightedInput<T extends Neuron> implements Serializable {
 
-    private T source;
+    private T input;
 
     private double weight;
     private double previousDelta = 0;
 
-    public Synapse(T source, double weight) {
-        this.source = source;
+    public WeightedInput(T input, double weight) {
+        this.input = input;
         this.weight = weight;
     }
 
-    public T getSource() {
-        return source;
+    public T getInput() {
+        return input;
+    }
+
+    public double getInputValue() {
+        return input.getOutput();
+    }
+
+    public double getWeightedInputValue() {
+        return weight * input.getOutput();
     }
 
     public double getWeight() {

@@ -25,16 +25,16 @@ public abstract class Neuron implements Serializable {
         return id;
     }
 
-    public abstract void activate();
+    public abstract Neuron activate();
     public abstract double getOutput();
 
-    protected static void updateSourceParameters(Map<Neuron, Synapse> sources, double error, double learningRate, double momentum) {
-        sources.values().forEach(synapse -> {
-            double delta = learningRate * error * synapse.getSource().getOutput();
-            delta += momentum * synapse.getPreviousDelta();
+    protected static void updateInputParameters(List<WeightedInput> weightedInputs, double error, double learningRate, double momentum) {
+        weightedInputs.forEach(weightedInput -> {
+            double delta = learningRate * error * weightedInput.getInputValue();
+            delta += momentum * weightedInput.getPreviousDelta();
 
-            synapse.setPreviousDelta(delta);
-            synapse.setWeight(synapse.getWeight() - delta);
+            weightedInput.setPreviousDelta(delta);
+            weightedInput.setWeight(weightedInput.getWeight() - delta);
         });
     }
 

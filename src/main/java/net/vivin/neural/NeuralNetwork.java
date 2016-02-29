@@ -150,7 +150,7 @@ public class NeuralNetwork implements Serializable {
     public void reset() {
         for(Layer layer : layers) {
             for(Neuron neuron : layer.getNeurons()) {
-                for(Synapse synapse : neuron.getInputs()) {
+                for(WeightedInput synapse : neuron.getInputs()) {
                     synapse.setWeight((Math.random() * 1) - 0.5);
                 }
             }
@@ -179,8 +179,8 @@ public class NeuralNetwork implements Serializable {
                 }
 
                 int k = 0;
-                for(Synapse sourceSynapse : sourceNeuron.getInputs()) {
-                    Synapse destinationSynapse = destinationNeuron.getInputs().get(k);
+                for(WeightedInput sourceSynapse : sourceNeuron.getInputs()) {
+                    WeightedInput destinationSynapse = destinationNeuron.getInputs().get(k);
 
                     destinationSynapse.setWeight(sourceSynapse.getWeight());
                     k++;

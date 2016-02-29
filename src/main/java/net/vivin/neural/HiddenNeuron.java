@@ -2,7 +2,9 @@ package net.vivin.neural;
 
 import net.vivin.neural.activators.ActivationStrategy;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -13,8 +15,8 @@ import java.util.stream.Collectors;
  */
 public class HiddenNeuron extends Neuron implements TargetNeuron, SourceNeuron {
 
-    private Map<Neuron, Synapse> sources;
-    private Map<TargetNeuron, Synapse> targets;
+    private List<WeightedInput> weightedInputs;
+    private Map<TargetNeuron, WeightedInput> targets;
 
     private Double weightedSum = null;
     private Double output = null;
@@ -25,18 +27,18 @@ public class HiddenNeuron extends Neuron implements TargetNeuron, SourceNeuron {
     public HiddenNeuron(ActivationStrategy activationStrategy) {
         super(activationStrategy);
 
-        this.sources = new HashMap<>();
+        this.weightedInputs = new ArrayList<>();
         this.targets = new HashMap<>();
     }
 
     @Override
-    public void addTargetSynapse(TargetNeuron target, Synapse synapse) {
-        targets.put(target, synapse);
+    public void addTargetWeightedInput(TargetNeuron target, WeightedInput weightedInput) {
+        targets.put(target, weightedInput);
     }
 
     @Override
-    public void addSourceSynapse(Synapse synapse) {
-        sources.put(synapse.getSource(), synapse);
+    public void addWeightedInput(WeightedInput weightedInput) {
+        weightedInputs.add(weightedInput);
     }
 
     @Override
@@ -48,7 +50,7 @@ public class HiddenNeuron extends Neuron implements TargetNeuron, SourceNeuron {
 
     @Override
     public void updateParameters(double learningRate, double momentum) {
-        Neuron.updateSourceParameters(sources, error, learningRate, momentum);
+        Neuron.updateInputParameters(weightedInputs, error, learningRate, momentum);
     }
 
     @Override
@@ -57,7 +59,7 @@ public class HiddenNeuron extends Neuron implements TargetNeuron, SourceNeuron {
     }
 
     private void calculateWeightedSum() {
-        weightedSum = sources.values().stream().mapToDouble(s -> s.getWeight() * s.getSource().getOutput()).sum();
+        weightedSum = weightedInputs.stream().mapToDouble(WeightedInput::getWeightedInputValue).sum();
     }
 
     public double getOutput() {
@@ -65,10 +67,11 @@ public class HiddenNeuron extends Neuron implements TargetNeuron, SourceNeuron {
     }
 
     @Override
-    public void activate() {
+    public HiddenNeuron activate() {
         calculateWeightedSum();
         output = activationStrategy.activate(weightedSum);
         derivative = activationStrategy.derivative(weightedSum);
+        return this;
     }
 
     @Override
@@ -76,9 +79,9 @@ public class HiddenNeuron extends Neuron implements TargetNeuron, SourceNeuron {
         StringBuilder builder = new StringBuilder();
         builder.append("HiddenNeuron: [\n")
             .append("\tid = ").append(id).append("\n")
-            .append("\tsources = [\n")
+            .append("\tweightedInputs = [\n")
             .append(
-                String.join("\n", sources.values().stream().map(s -> String.format("\t\t[id = %s, weight = %f]", s.getSource().getId(), s.getWeight())).collect(Collectors.toList()))
+                String.join("\n", weightedInputs.stream().map(s -> String.format("\t\t[id = %s, weight = %f]", s.getInput().getId(), s.getWeight())).collect(Collectors.toList()))
             )
             .append("\n\t]\n")
             .append("\tweightedSum = ").append(weightedSum).append("\n")

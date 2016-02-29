@@ -43,14 +43,14 @@ public class OutputLayer extends Layer<OutputNeuron> implements TargetLayer {
 
         previous.neurons.forEach(source ->
             neurons.forEach(target -> {
-                Synapse synapse = new Synapse<>(source, (Math.random() * 1) - 0.5);
-                target.addSourceSynapse(synapse);
-                source.addTargetSynapse(target, synapse);
+                WeightedInput weightedInput = new WeightedInput<>(source, (Math.random() * 1) - 0.5);
+                target.addWeightedInput(weightedInput);
+                source.addTargetWeightedInput(target, weightedInput);
             })
         );
 
         if(previous.hasBias()) {
-            neurons.forEach(target -> target.addSourceSynapse(new Synapse<>(previous.getBias(), (Math.random() * 1) - 0.5)));
+            neurons.forEach(target -> target.addWeightedInput(new WeightedInput<>(previous.getBias(), (Math.random() * 1) - 0.5)));
         }
     }
 }

@@ -6,5 +6,5 @@ package net.vivin.neural;
  * @author vivin
  */
 public interface SourceNeuron {
-    void addTargetSynapse(TargetNeuron neuron, Synapse synapse);
+    void addTargetWeightedInput(TargetNeuron neuron, WeightedInput weightedInput);
 }

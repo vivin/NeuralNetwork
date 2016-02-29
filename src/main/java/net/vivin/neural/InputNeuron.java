@@ -21,8 +21,9 @@ public class InputNeuron extends Neuron implements SourceNeuron {
     }
 
     @Override
-    public void activate() {
+    public InputNeuron activate() {
         // do nothing
+        return this;
     }
 
     @Override
@@ -31,7 +32,7 @@ public class InputNeuron extends Neuron implements SourceNeuron {
     }
 
     @Override
-    public void addTargetSynapse(TargetNeuron neuron, Synapse synapse) {
+    public void addTargetWeightedInput(TargetNeuron neuron, WeightedInput weightedInput) {
         // do nothing
     }
 
